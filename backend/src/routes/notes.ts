@@ -5,4 +5,7 @@ const router = express.Router();
 
 router.get("/", NotesController.getNotes);
 
+router.get("/:noteId", NotesController.getNote);
+
+
 export default router;
