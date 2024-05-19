@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
 import NoteModel from "../models/note";
+import createHttpError from "http-errors";
 
 export const getNotes: RequestHandler = async (req, res, next) => {
   try {
