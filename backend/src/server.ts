@@ -2,6 +2,8 @@ import app from "./app";
 import env from "../src/util/validateEnv";
 import mongoose from "mongoose";
 
+mongoose.set("strictQuery", true);
+
 mongoose
   .connect(env.MONGO_CONNECTION_STRING)
   .then(() => {
