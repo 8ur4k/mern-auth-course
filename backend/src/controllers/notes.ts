@@ -35,3 +35,28 @@ interface CreateNoteBody {
   title?: string;
   text?: string;
 }
+
+export const createNote: RequestHandler<
+  unknown,
+  unknown,
+  CreateNoteBody,
+  unknown
+> = async (req, res, next) => {
+  const title = req.body.title;
+  const text = req.body.text;
+
+  try {
+    if (!title) {
+      throw createHttpError(400, "Note must have a title");
+    }
+
+    const newNote = await NoteModel.create({
+      title: title,
+      text: text,
+    });
+    res.status(201).json(newNote);
+  } catch (error) {
+    next(error);
+  }
+};
+
