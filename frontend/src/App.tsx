@@ -6,13 +6,15 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 import styles from "./styles/NotesPage.module.css";
 import stylesUtils from "./styles/utils.module.css";
 import * as NotesApi from "./network/notes_api";
-import AddNoteDialog from "./components/AddNoteDialog";
+import AddNoteDialog from "./components/AddEditNoteDialog";
 import { FaPlus } from "react-icons/fa";
+import AddEditNoteDialog from "./components/AddEditNoteDialog";
 
 function App() {
   const [notes, setNotes] = useState<NoteModel[]>([]);
 
   const [showAddNoteDialog, setShowAddNoteDialog] = useState(false);
+  const [noteToEdit, setNoteToEdit] = useState<NoteModel | null>(null);
 
   useEffect(() => {
     async function loadNotes() {
@@ -52,6 +54,7 @@ function App() {
             <Note
               note={note}
               className={styles.note}
+              onNoteClicked={setNoteToEdit}
               onDeleteNoteClicked={deleteNote}
             />
           </Col>
@@ -63,6 +66,22 @@ function App() {
           onNoteSaved={(newNote) => {
             setNotes([...notes, newNote]);
             setShowAddNoteDialog(false);
+          }}
+        />
+      )}
+      {noteToEdit && (
+        <AddEditNoteDialog
+          noteToEdit={noteToEdit}
+          onDismiss={() => setNoteToEdit(null)}
+          onNoteSaved={(updatedNote) => {
+            setNotes(
+              notes.map((existingNote) =>
+                existingNote._id === updatedNote._id
+                  ? updatedNote
+                  : existingNote
+              )
+            );
+            setNoteToEdit(null);
           }}
         />
       )}
