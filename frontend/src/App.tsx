@@ -6,7 +6,6 @@ import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
 import styles from "./styles/NotesPage.module.css";
 import stylesUtils from "./styles/utils.module.css";
 import * as NotesApi from "./network/notes_api";
-import AddNoteDialog from "./components/AddEditNoteDialog";
 import { FaPlus } from "react-icons/fa";
 import AddEditNoteDialog from "./components/AddEditNoteDialog";
 
@@ -15,7 +14,7 @@ function App() {
   const [notesLoading, setNotesLoading] = useState(true);
   const [showNotesLoadingError, setShowNotesLoadingError] = useState(false);
 
-  const [showAddNoteDialog, setShowAddNoteDialog] = useState(false);
+  const [showAddEditNoteDialog, setShowAddEditNoteDialog] = useState(false);
   const [noteToEdit, setNoteToEdit] = useState<NoteModel | null>(null);
 
   useEffect(() => {
@@ -65,7 +64,7 @@ function App() {
     <Container className={styles.notesPage}>
       <Button
         className={`mb-4 ${stylesUtils.blockCenter} ${stylesUtils.flexCenter}`}
-        onClick={() => setShowAddNoteDialog(true)}
+        onClick={() => setShowAddEditNoteDialog(true)}
       >
         <FaPlus />
         Add new note
@@ -79,12 +78,12 @@ function App() {
           {notes.length > 0 ? notesGrid : <p>You don't have any noyes yet</p>}
         </>
       )}
-      {showAddNoteDialog && (
-        <AddNoteDialog
-          onDismiss={() => setShowAddNoteDialog(false)}
+      {showAddEditNoteDialog && (
+        <AddEditNoteDialog
+          onDismiss={() => setShowAddEditNoteDialog(false)}
           onNoteSaved={(newNote) => {
             setNotes([...notes, newNote]);
-            setShowAddNoteDialog(false);
+            setShowAddEditNoteDialog(false);
           }}
         />
       )}
