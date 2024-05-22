@@ -8,6 +8,7 @@ import stylesUtils from "./styles/utils.module.css";
 import * as NotesApi from "./network/notes_api";
 import { FaPlus } from "react-icons/fa";
 import AddEditNoteDialog from "./components/AddEditNoteDialog";
+import NavBar from "./components/NavBar";
 
 function App() {
   const [notes, setNotes] = useState<NoteModel[]>([]);
@@ -61,49 +62,57 @@ function App() {
   );
 
   return (
-    <Container className={styles.notesPage}>
-      <Button
-        className={`mb-4 ${stylesUtils.blockCenter} ${stylesUtils.flexCenter}`}
-        onClick={() => setShowAddEditNoteDialog(true)}
-      >
-        <FaPlus />
-        Add new note
-      </Button>
-      {notesLoading && <Spinner animation="border" variant="primary" />}
-      {showNotesLoadingError && (
-        <p>Something went wrong. Please refresh the page</p>
-      )}
-      {!notesLoading && !showNotesLoadingError && (
-        <>
-          {notes.length > 0 ? notesGrid : <p>You don't have any noyes yet</p>}
-        </>
-      )}
-      {showAddEditNoteDialog && (
-        <AddEditNoteDialog
-          onDismiss={() => setShowAddEditNoteDialog(false)}
-          onNoteSaved={(newNote) => {
-            setNotes([...notes, newNote]);
-            setShowAddEditNoteDialog(false);
-          }}
-        />
-      )}
-      {noteToEdit && (
-        <AddEditNoteDialog
-          noteToEdit={noteToEdit}
-          onDismiss={() => setNoteToEdit(null)}
-          onNoteSaved={(updatedNote) => {
-            setNotes(
-              notes.map((existingNote) =>
-                existingNote._id === updatedNote._id
-                  ? updatedNote
-                  : existingNote
-              )
-            );
-            setNoteToEdit(null);
-          }}
-        />
-      )}
-    </Container>
+    <div>
+      <NavBar
+        loggedInUser={null}
+        onLoginClicked={() => {}}
+        onSignUpClicked={() => {}}
+        onlogoutSuccessful={() => {}}
+      />
+      <Container className={styles.notesPage}>
+        <Button
+          className={`mb-4 ${stylesUtils.blockCenter} ${stylesUtils.flexCenter}`}
+          onClick={() => setShowAddEditNoteDialog(true)}
+        >
+          <FaPlus />
+          Add new note
+        </Button>
+        {notesLoading && <Spinner animation="border" variant="primary" />}
+        {showNotesLoadingError && (
+          <p>Something went wrong. Please refresh the page</p>
+        )}
+        {!notesLoading && !showNotesLoadingError && (
+          <>
+            {notes.length > 0 ? notesGrid : <p>You don't have any noyes yet</p>}
+          </>
+        )}
+        {showAddEditNoteDialog && (
+          <AddEditNoteDialog
+            onDismiss={() => setShowAddEditNoteDialog(false)}
+            onNoteSaved={(newNote) => {
+              setNotes([...notes, newNote]);
+              setShowAddEditNoteDialog(false);
+            }}
+          />
+        )}
+        {noteToEdit && (
+          <AddEditNoteDialog
+            noteToEdit={noteToEdit}
+            onDismiss={() => setNoteToEdit(null)}
+            onNoteSaved={(updatedNote) => {
+              setNotes(
+                notes.map((existingNote) =>
+                  existingNote._id === updatedNote._id
+                    ? updatedNote
+                    : existingNote
+                )
+              );
+              setNoteToEdit(null);
+            }}
+          />
+        )}
+      </Container>
+    </div>
   );
 }
 
