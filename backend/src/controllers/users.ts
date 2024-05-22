@@ -116,7 +116,7 @@ export const login: RequestHandler<
   }
 };
 
-export const logOut: RequestHandler = (req, res, next) => {
+export const logout: RequestHandler = (req, res, next) => {
   req.session.destroy((error) => {
     if (error) {
       next(error);
