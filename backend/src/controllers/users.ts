@@ -46,7 +46,6 @@ export const getUser: RequestHandler<
     if (!user) {
       throw createHttpError(404, "User not found");
     }
-    console.log(user);
     res.status(200).json(user);
   } catch (error) {
     next(error);
