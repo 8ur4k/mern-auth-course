@@ -14,6 +14,45 @@ export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
   }
 };
 
+interface GetUserParamsBody {
+  username?: string;
+}
+
+interface GetUserResponseBody {
+  username?: string;
+  email?: string;
+}
+
+export const getUser: RequestHandler<
+  GetUserParamsBody,
+  GetUserResponseBody,
+  unknown,
+  unknown
+> = async (req, res, next) => {
+  try {
+    let user = null;
+    const paramUser = await UserModel.findOne({
+      username: req.params.username,
+    }).exec();
+    const authUser = await UserModel.findById({ _id: req.session.userId })
+      .select("+email")
+      .exec();
+    if (paramUser?._id.toString() === authUser?._id.toString()) {
+      user = authUser;
+    } else {
+      user = paramUser;
+    }
+
+    if (!user) {
+      throw createHttpError(404, "User not found");
+    }
+    console.log(user);
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
 interface SignUpBody {
   username?: string;
   email?: string;

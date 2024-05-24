@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.get("/", requiresAuth, UserController.getAuthenticatedUser);
 
+router.get("/:username", requiresAuth, UserController.getUser);
+
 router.post("/signup", UserController.signUp);
 
 router.post("/login", UserController.login);

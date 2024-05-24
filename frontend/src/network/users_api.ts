@@ -6,6 +6,20 @@ export async function getLoggedInUser(): Promise<User> {
   return response.json();
 }
 
+export interface GetUserCredentials {
+  profileUsername: string;
+}
+
+export async function getUser(credentials: GetUserCredentials): Promise<User> {
+  const response = await fetchData(
+    `/api/users/${credentials.profileUsername}`,
+    {
+      method: "GET",
+    }
+  );
+  return response.json();
+}
+
 export interface SignUpCredentials {
   username: string;
   email: string;
