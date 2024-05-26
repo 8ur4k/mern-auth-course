@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import NoteModel from "../models/note";
 import createHttpError from "http-errors";
+import * as z from "zod";
 import mongoose from "mongoose";
 import { assertIsDefined } from "../util/assertIsDefined";
 
@@ -44,20 +45,15 @@ export const getNote: RequestHandler = async (req, res, next) => {
   }
 };
 
-interface CreateNoteBody {
-  title?: string;
-  text?: string;
-}
+const CreateNoteBodySchema = z.object({ title: z.string(), text: z.string() });
 
-export const createNote: RequestHandler<
-  unknown,
-  unknown,
-  CreateNoteBody,
-  unknown
-> = async (req, res, next) => {
-  const title = req.body.title;
-  const text = req.body.text;
+export const createNote: RequestHandler = async (req, res, next) => {
   const authenticatedUserId = req.session.userId;
+  const { data, error } = CreateNoteBodySchema.safeParse(req.body);
+  if (error) {
+    throw createHttpError(400, "Invalid parameters");
+  }
+  const { title, text } = data;
 
   try {
     assertIsDefined(authenticatedUserId);
@@ -77,24 +73,23 @@ export const createNote: RequestHandler<
   }
 };
 
-interface UpdateNoteParams {
-  noteId: string;
-}
+const UpdateNoteBodySchema = z.object({
+  title: z.string(),
+  text: z.string().optional(),
+});
 
-interface UpdateNoteBody {
-  title?: string;
-  text?: string;
-}
+const UpdateNoteParamsSchema = z.object({
+  noteId: z.string(),
+});
 
-export const updateNote: RequestHandler<
-  UpdateNoteParams,
-  unknown,
-  UpdateNoteBody,
-  unknown
-> = async (req, res, next) => {
-  const noteId = req.params.noteId;
-  const newTitle = req.body.title;
-  const newText = req.body.text;
+export const updateNote: RequestHandler = async (req, res, next) => {
+  const { noteId } = UpdateNoteParamsSchema.parse(req.params);
+  const { data, error } = UpdateNoteBodySchema.safeParse(req.body);
+  if (error) {
+    throw createHttpError(400, "Invalid parameters");
+  }
+  const newTitle = data.title;
+  const newText = data.text;
   const authenticatedUserId = req.session.userId;
 
   try {
