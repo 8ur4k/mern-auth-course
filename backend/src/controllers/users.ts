@@ -1,7 +1,9 @@
 import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import UserModel from "../models/user";
+import * as z from "zod";
 import bcrypt from "bcrypt";
+import { AuthUserSchema } from "../middleware/auth";
 
 export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
   try {
@@ -14,29 +16,17 @@ export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
   }
 };
 
-interface GetUserParamsBody {
-  username?: string;
-}
+const GetUserParamsSchema = z.object({ username: z.string() });
 
-interface GetUserResponseBody {
-  username?: string;
-  email?: string;
-}
-
-export const getUser: RequestHandler<
-  GetUserParamsBody,
-  GetUserResponseBody,
-  unknown,
-  unknown
-> = async (req, res, next) => {
+export const getUser: RequestHandler = async (req, res, next) => {
   try {
+    const authUser = AuthUserSchema.parse(req.user);
+    const { username } = GetUserParamsSchema.parse(req.params);
+    if (!authUser) throw new Error("Auth user not found");
+
     let user = null;
-    const paramUser = await UserModel.findOne({
-      username: req.params.username,
-    }).exec();
-    const authUser = await UserModel.findById({ _id: req.session.userId })
-      .select("+email")
-      .exec();
+    const paramUser = await UserModel.findOne({ username }).exec();
+
     if (paramUser?._id.toString() === authUser?._id.toString()) {
       user = authUser;
     } else {
@@ -52,26 +42,19 @@ export const getUser: RequestHandler<
   }
 };
 
-interface SignUpBody {
-  username?: string;
-  email?: string;
-  password?: string;
-}
-
-export const signUp: RequestHandler<
-  unknown,
-  unknown,
-  SignUpBody,
-  unknown
-> = async (req, res, next) => {
-  const username = req.body.username;
-  const email = req.body.email;
-  const passwordRaw = req.body.password;
-
+const SignUpRequestBodySchema = z.object({
+  username: z.string(),
+  email: z.string(),
+  password: z.string(),
+});
+export const signUp: RequestHandler = async (req, res, next) => {
   try {
-    if (!username || !email || !passwordRaw) {
-      throw createHttpError(400, "Parameters missing");
+    const { data, error } = SignUpRequestBodySchema.safeParse(req.body);
+    if (error) {
+      throw createHttpError(400, "Invalid parameters");
     }
+
+    const { username, email, password: passwordRaw } = data;
 
     const existingUsername = await UserModel.findOne({
       username: username,
@@ -108,24 +91,17 @@ export const signUp: RequestHandler<
   }
 };
 
-interface LoginBody {
-  username?: string;
-  password?: string;
-}
-
-export const login: RequestHandler<
-  unknown,
-  unknown,
-  LoginBody,
-  unknown
-> = async (req, res, next) => {
-  const username = req.body.username;
-  const password = req.body.password;
+const LoginRequestBodySchema = z.object({
+  username: z.string(),
+  password: z.string(),
+});
+export const login: RequestHandler = async (req, res, next) => {
+  const { data, error } = LoginRequestBodySchema.safeParse(req.body);
 
   try {
-    if (!username || !password) {
-      throw createHttpError(400, "Parameters missing");
-    }
+    if (error) throw createHttpError(400, "Invalid parameters");
+
+    const { username, password } = data;
 
     const user = await UserModel.findOne({ username: username })
       .select("+password +email")

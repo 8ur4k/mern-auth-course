@@ -5,7 +5,6 @@ import { Spinner } from "react-bootstrap";
 import styles from "../styles/ProfilePage.module.css";
 import ProfileAuthCard from "../components/ProfileAuthCard";
 import ProfileCard from "../components/ProfileCard";
-
 interface ProfilePageProps {
   profileUsername: string | undefined;
 }
@@ -14,7 +13,7 @@ const ProfilePage = ({ profileUsername }: ProfilePageProps) => {
   const [profileUser, setProfileUser] = useState<User | null>(null);
   const [profileLoading, setProfileLoading] = useState(true);
   const [showProfileLoadingError, setShowProfileLoadingError] = useState(false);
-  const [isProfileAuth, setIsProfileAuth] = useState(false);
+  const isProfileAuth = Boolean(profileUser?.email);
 
   useEffect(() => {
     async function getProfileUser() {
@@ -37,10 +36,7 @@ const ProfilePage = ({ profileUsername }: ProfilePageProps) => {
       }
     }
     getProfileUser();
-    if (profileUser?.email) {
-      setIsProfileAuth(true);
-    }
-  }, [profileUsername, profileUser?.email]);
+  }, []);
 
   return (
     <div className={styles.profileContainer}>
