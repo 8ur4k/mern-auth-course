@@ -36,7 +36,7 @@ const ProfilePage = ({ profileUsername }: ProfilePageProps) => {
       }
     }
     getProfileUser();
-  }, []);
+  }, [profileUsername]);
 
   return (
     <div className={styles.profileContainer}>
