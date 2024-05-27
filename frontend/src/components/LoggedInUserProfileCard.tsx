@@ -5,7 +5,7 @@ interface UserProps {
   email: string;
 }
 
-const ProfileAuthCard = (user: UserProps) => {
+const LoggedInUserProfileCard = (user: UserProps) => {
   return (
     <Card style={{ width: "25rem" }}>
       <Card.Img
@@ -22,4 +22,4 @@ const ProfileAuthCard = (user: UserProps) => {
   );
 };
 
-export default ProfileAuthCard;
+export default LoggedInUserProfileCard;
