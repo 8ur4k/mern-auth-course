@@ -12,15 +12,12 @@ import ProfilePage from "./pages/ProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import styles from "./styles/App.module.css";
 
-const ProfilePageWrapper = () => {
-  const { username } = useParams();
-  return <ProfilePage profileUsername={username} />;
-};
-
 function App() {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+
+  console.log("a");
 
   useEffect(() => {
     async function fetchLoggedInUser() {
@@ -49,7 +46,7 @@ function App() {
               path="/"
               element={<NotesPage loggedInUser={loggedInUser} />}
             />
-            <Route path="/users/:username" element={<ProfilePageWrapper />} />
+            <Route path="/users/:username" element={<ProfilePage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/*" element={<NotFoundPage />} />
           </Routes>

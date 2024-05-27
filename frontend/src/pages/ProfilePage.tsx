@@ -5,15 +5,14 @@ import { Spinner } from "react-bootstrap";
 import styles from "../styles/ProfilePage.module.css";
 import ProfileAuthCard from "../components/ProfileAuthCard";
 import ProfileCard from "../components/ProfileCard";
-interface ProfilePageProps {
-  profileUsername: string | undefined;
-}
+import { useParams } from "react-router-dom";
 
-const ProfilePage = ({ profileUsername }: ProfilePageProps) => {
+const ProfilePage = () => {
   const [profileUser, setProfileUser] = useState<User | null>(null);
   const [profileLoading, setProfileLoading] = useState(true);
   const [showProfileLoadingError, setShowProfileLoadingError] = useState(false);
   const isProfileAuth = Boolean(profileUser?.email);
+  const profileUsername = useParams().username;
 
   useEffect(() => {
     async function getProfileUser() {
