@@ -1,6 +1,6 @@
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { User } from "../models/user";
-import NavbarLoggeinView from "./NavbarLoggeinView";
+import NavbarLoggeinView from "./NavbarLoggedInView";
 import NavBarLoggedOutView from "./NavBarLoggedOutView";
 import { Link } from "react-router-dom";
 
