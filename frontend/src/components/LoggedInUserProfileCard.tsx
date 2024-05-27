@@ -14,7 +14,7 @@ const LoggedInUserProfileCard = (user: UserProps) => {
         <Card.Title>{user.username}</Card.Title>
         <Card.Title>{user.email}</Card.Title>
         <Card.Text>Hi there! I'm using EstebaNotes.🙋</Card.Text>
-        <Button variant="primary">Change Password</Button>
+        <Button>Change Password</Button>
       </Card.Body>
     </Card>
   );
