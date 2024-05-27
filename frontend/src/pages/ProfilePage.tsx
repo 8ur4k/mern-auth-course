@@ -22,7 +22,7 @@ const ProfilePage = () => {
 
         const authUser = await UserApi.getLoggedInUser();
         const paramUser = await UserApi.getUser({
-          profileUsername: profileUsername,
+          profileUsername,
         });
 
         if (authUser.username === paramUser.username) {
