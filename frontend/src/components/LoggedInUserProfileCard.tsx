@@ -9,10 +9,7 @@ interface UserProps {
 const LoggedInUserProfileCard = (user: UserProps) => {
   return (
     <Card className={styles.profileCard}>
-      <Card.Img
-        variant="top"
-        src="https://www.technopat.net/sosyal/eklenti/img-20190611-wa0005-jpg.404137/"
-      />
+      <Card.Img src="/avatar-placeholder.jpg" />
       <Card.Body>
         <Card.Title>{user.username}</Card.Title>
         <Card.Title>{user.email}</Card.Title>
