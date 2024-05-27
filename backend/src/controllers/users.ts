@@ -3,7 +3,6 @@ import createHttpError from "http-errors";
 import UserModel from "../models/user";
 import * as z from "zod";
 import bcrypt from "bcrypt";
-import { AuthUserSchema } from "../middleware/auth";
 
 export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
   try {
@@ -20,18 +19,8 @@ const GetUserParamsSchema = z.object({ username: z.string() });
 
 export const getUser: RequestHandler = async (req, res, next) => {
   try {
-    const authUser = AuthUserSchema.parse(req.user);
     const { username } = GetUserParamsSchema.parse(req.params);
-    if (!authUser) throw new Error("Auth user not found");
-
-    let user = null;
-    const paramUser = await UserModel.findOne({ username }).exec();
-
-    if (paramUser?._id.toString() === authUser?._id.toString()) {
-      user = authUser;
-    } else {
-      user = paramUser;
-    }
+    const user = await UserModel.findOne({ username }).exec();
 
     if (!user) {
       throw createHttpError(404, "User not found");
