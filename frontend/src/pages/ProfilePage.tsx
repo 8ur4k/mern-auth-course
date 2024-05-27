@@ -12,7 +12,8 @@ const ProfilePage = () => {
   const [profileUser, setProfileUser] = useState<User>();
   const [profileLoading, setProfileLoading] = useState(true);
   const [profileLoadingError, setProfileLoadingError] = useState<String>("");
-  const [isProfileAuth, setIsProfileAuth] = useState<Boolean>(false);
+  const [isLoggedInUserProfile, setIsLoggedInUserProfile] =
+    useState<Boolean>(false);
   const profileUsername = useParams().username;
 
   useEffect(() => {
@@ -32,7 +33,7 @@ const ProfilePage = () => {
 
         if (authUser.username === paramUser.username) {
           setProfileUser(authUser);
-          setIsProfileAuth(true);
+          setIsLoggedInUserProfile(true);
         } else {
           setProfileUser(paramUser);
         }
@@ -53,7 +54,7 @@ const ProfilePage = () => {
           <Spinner variant="primary" />
         </div>
       ) : !profileLoadingError ? (
-        isProfileAuth ? (
+        isLoggedInUserProfile ? (
           <div className={styles.center}>
             <ProfileAuthCard
               username={profileUser!.username!}
