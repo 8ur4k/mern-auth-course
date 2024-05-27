@@ -11,7 +11,7 @@ import { useParams } from "react-router-dom";
 const ProfilePage = () => {
   const [profileUser, setProfileUser] = useState<User>();
   const [profileLoading, setProfileLoading] = useState(true);
-  const [showProfileLoadingError, setShowProfileLoadingError] = useState(false);
+  const [profileLoadingError, setProfileLoadingError] = useState<String>("");
   const [isProfileAuth, setIsProfileAuth] = useState<Boolean>(false);
   const profileUsername = useParams().username;
 
@@ -19,7 +19,7 @@ const ProfilePage = () => {
     async function setUser() {
       try {
         setProfileLoading(true);
-        setShowProfileLoadingError(false);
+        setProfileLoadingError("");
 
         if (!profileUsername) {
           throw createHttpError(400, "Invalid parameters");
@@ -37,7 +37,7 @@ const ProfilePage = () => {
           setProfileUser(paramUser);
         }
       } catch (error) {
-        setShowProfileLoadingError(true);
+        setProfileLoadingError("User not found 404");
         console.error(error);
       } finally {
         setProfileLoading(false);
@@ -48,17 +48,12 @@ const ProfilePage = () => {
 
   return (
     <div className={styles.profileContainer}>
-      {profileLoading && (
+      {profileLoading ? (
         <div className={styles.center}>
-          <Spinner animation="border" variant="primary" />
+          <Spinner variant="primary" />
         </div>
-      )}
-      {showProfileLoadingError && (
-        <h5 className={styles.center}>User Not Found 404</h5>
-      )}
-      {!profileLoading &&
-        !showProfileLoadingError &&
-        (isProfileAuth ? (
+      ) : !profileLoadingError ? (
+        isProfileAuth ? (
           <div className={styles.center}>
             <ProfileAuthCard
               username={profileUser!.username!}
@@ -69,7 +64,10 @@ const ProfilePage = () => {
           <div className={styles.center}>
             <ProfileCard username={profileUser?.username!} />
           </div>
-        ))}
+        )
+      ) : (
+        <h5 className={styles.center}>{profileLoadingError}</h5>
+      )}
     </div>
   );
 };
