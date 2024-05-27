@@ -6,35 +6,46 @@ export async function getLoggedInUser(): Promise<User> {
   return response.json();
 }
 
-export interface SignUpCredentials {
+export interface GetUserParams {
+  profileUsername: string;
+}
+
+export async function getUser(params: GetUserParams): Promise<User> {
+  const response = await fetchData(`/api/users/${params.profileUsername}`, {
+    method: "GET",
+  });
+  return response.json();
+}
+
+export interface SignUpParams {
   username: string;
   email: string;
   password: string;
 }
 
-export async function signUp(credentials: SignUpCredentials): Promise<User> {
+export async function signUp(params: SignUpParams): Promise<User> {
   const response = await fetchData("/api/users/signup", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(credentials),
+    body: JSON.stringify(params),
   });
   return response.json();
 }
 
-export interface LoginCredentials {
+export interface LoginParams {
   username: string;
   password: string;
 }
 
-export async function login(credentials: LoginCredentials): Promise<User> {
+export async function login(params: LoginParams): Promise<User> {
   const response = await fetchData("/api/users/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(credentials),
+    body: JSON.stringify(params),
   });
   return response.json();
 }

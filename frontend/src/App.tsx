@@ -4,10 +4,11 @@ import LoginModal from "./components/LoginModal";
 import SignUpModal from "./components/SignUpModal";
 import { User } from "./models/user";
 import * as UserApi from "./network/users_api";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import NotesPage from "./pages/NotesPage";
 import PrivacyPage from "./pages/PrivacyPage";
+import ProfilePage from "./pages/ProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import styles from "./styles/App.module.css";
 
@@ -15,6 +16,8 @@ function App() {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+
+  console.log("a");
 
   useEffect(() => {
     async function fetchLoggedInUser() {
@@ -43,6 +46,7 @@ function App() {
               path="/"
               element={<NotesPage loggedInUser={loggedInUser} />}
             />
+            <Route path="/users/:username" element={<ProfilePage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/*" element={<NotFoundPage />} />
           </Routes>

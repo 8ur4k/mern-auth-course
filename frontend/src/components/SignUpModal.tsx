@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { User } from "../models/user";
-import { SignUpCredentials } from "../network/users_api";
+import { SignUpParams } from "../network/users_api";
 import * as UserApi from "../network/users_api";
 import { Alert, Button, Form, Modal } from "react-bootstrap";
 import TextInputField from "./form/textInputField";
@@ -20,9 +20,9 @@ const SignUpModal = ({ onDismiss, onSignUpSuccessful }: SignUpModalProps) => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<SignUpCredentials>();
+  } = useForm<SignUpParams>();
 
-  async function onSubmit(credentials: SignUpCredentials) {
+  async function onSubmit(credentials: SignUpParams) {
     try {
       const newUser = await UserApi.signUp(credentials);
       onSignUpSuccessful(newUser);

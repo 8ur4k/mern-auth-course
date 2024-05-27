@@ -1,68 +1,76 @@
 import { useEffect, useState } from "react";
 import { User } from "../models/user";
 import * as UserApi from "../network/users_api";
+import createHttpError from "http-errors";
 import { Spinner } from "react-bootstrap";
 import styles from "../styles/ProfilePage.module.css";
-import ProfileAuthCard from "../components/ProfileAuthCard";
+import ProfileAuthCard from "../components/LoggedInUserProfileCard";
 import ProfileCard from "../components/ProfileCard";
-interface ProfilePageProps {
-  profileUsername: string | undefined;
-}
+import { useParams } from "react-router-dom";
 
-const ProfilePage = ({ profileUsername }: ProfilePageProps) => {
-  const [profileUser, setProfileUser] = useState<User | null>(null);
+const ProfilePage = () => {
+  const [profileUser, setProfileUser] = useState<User>();
   const [profileLoading, setProfileLoading] = useState(true);
-  const [showProfileLoadingError, setShowProfileLoadingError] = useState(false);
-
-  const isProfileAuth = Boolean(profileUser?.email);
+  const [profileLoadingError, setProfileLoadingError] = useState<String>("");
+  const [isLoggedInUserProfile, setIsLoggedInUserProfile] =
+    useState<Boolean>(false);
+  const profileUsername = useParams().username;
 
   useEffect(() => {
-    async function getProfileUser() {
+    async function setUser() {
       try {
-        setShowProfileLoadingError(false);
         setProfileLoading(true);
-        if (profileUsername) {
-          const user = await UserApi.getUser({
-            profileUsername: profileUsername,
-          });
-          setProfileUser(user);
+        setProfileLoadingError("");
+
+        if (!profileUsername) {
+          throw createHttpError(400, "Invalid parameters");
+        }
+
+        const authUser = await UserApi.getLoggedInUser();
+        const paramUser = await UserApi.getUser({
+          profileUsername,
+        });
+
+        if (authUser.username === paramUser.username) {
+          setProfileUser(authUser);
+          setIsLoggedInUserProfile(true);
         } else {
-          console.error(404, "User Not Found");
+          setProfileUser(paramUser);
         }
       } catch (error) {
-        setShowProfileLoadingError(true);
+        setProfileLoadingError("User not found 404");
         console.error(error);
       } finally {
         setProfileLoading(false);
       }
     }
-    getProfileUser();
-  }, []);
+    setUser();
+  }, [profileUsername]);
 
   return (
     <div className={styles.profileContainer}>
-      {profileLoading && (
-        <div className={styles.center}>
-          <Spinner animation="border" variant="primary" />
-        </div>
-      )}
-      {showProfileLoadingError && (
-        <h5 className={styles.center}>User Not Found 404</h5>
-      )}
-      {!profileLoading &&
-        !showProfileLoadingError &&
-        (isProfileAuth ? (
-          <div className={styles.center}>
-            <ProfileAuthCard
-              username={profileUser?.username!}
-              email={profileUser?.email}
-            />
+      <div className={styles.center}>
+        {profileLoading ? (
+          <div>
+            <Spinner variant="primary" />
           </div>
+        ) : !profileLoadingError ? (
+          isLoggedInUserProfile ? (
+            <div>
+              <ProfileAuthCard
+                username={profileUser!.username!}
+                email={profileUser!.email}
+              />
+            </div>
+          ) : (
+            <div>
+              <ProfileCard username={profileUser?.username!} />
+            </div>
+          )
         ) : (
-          <div className={styles.center}>
-            <ProfileCard username={profileUser?.username!} />
-          </div>
-        ))}
+          <h5>{profileLoadingError}</h5>
+        )}
+      </div>
     </div>
   );
 };

@@ -1,6 +1,7 @@
-import { Button, Navbar } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { User } from "../models/user";
 import * as UserApi from "../network/users_api";
+import { useNavigate } from "react-router-dom";
 
 interface NavbarLoggeinViewProps {
   user: User;
@@ -11,6 +12,8 @@ const NavbarLoggeinView = ({
   user,
   onLogoutSuccessfull,
 }: NavbarLoggeinViewProps) => {
+  const navigate = useNavigate();
+
   async function logout() {
     try {
       await UserApi.logout();
@@ -23,7 +26,13 @@ const NavbarLoggeinView = ({
 
   return (
     <>
-      <Navbar.Text className="me-2">Signed in as : {user.username}</Navbar.Text>
+      <Button
+        onClick={() => {
+          navigate(`/users/${user.username}`);
+        }}
+      >
+        {user.username}
+      </Button>
       <Button onClick={logout}>Log out</Button>
     </>
   );
