@@ -1,4 +1,5 @@
 import { Card, Button } from "react-bootstrap";
+import styles from "../styles/ProfileCard.module.css";
 
 interface UserProps {
   username: string;
@@ -7,7 +8,7 @@ interface UserProps {
 
 const ProfileCard = (user: UserProps) => {
   return (
-    <Card style={{ width: "25rem" }}>
+    <Card className={styles.profileCard}>
       <Card.Img
         variant="top"
         src="https://www.technopat.net/sosyal/eklenti/img-20190611-wa0005-jpg.404137/"
