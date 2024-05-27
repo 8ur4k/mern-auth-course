@@ -8,24 +8,28 @@ import ProfileCard from "../components/ProfileCard";
 import { useParams } from "react-router-dom";
 
 const ProfilePage = () => {
-  const [profileUser, setProfileUser] = useState<User | null>(null);
+  const [profileUser, setProfileUser] = useState<User>();
   const [profileLoading, setProfileLoading] = useState(true);
   const [showProfileLoadingError, setShowProfileLoadingError] = useState(false);
-  const isProfileAuth = Boolean(profileUser?.email);
-  const profileUsername = useParams().username;
+  const [isProfileAuth, setIsProfileAuth] = useState<Boolean>(false);
+  const profileUsername = useParams().username || "";
 
   useEffect(() => {
-    async function getProfileUser() {
+    async function setUser() {
       try {
-        setShowProfileLoadingError(false);
         setProfileLoading(true);
-        if (profileUsername) {
-          const user = await UserApi.getUser({
-            profileUsername: profileUsername,
-          });
-          setProfileUser(user);
+        setShowProfileLoadingError(false);
+
+        const authUser = await UserApi.getLoggedInUser();
+        const paramUser = await UserApi.getUser({
+          profileUsername: profileUsername,
+        });
+
+        if (authUser.username === paramUser.username) {
+          setProfileUser(authUser);
+          setIsProfileAuth(true);
         } else {
-          console.error(404, "User Not Found");
+          setProfileUser(paramUser);
         }
       } catch (error) {
         setShowProfileLoadingError(true);
@@ -34,7 +38,7 @@ const ProfilePage = () => {
         setProfileLoading(false);
       }
     }
-    getProfileUser();
+    setUser();
   }, [profileUsername]);
 
   return (
