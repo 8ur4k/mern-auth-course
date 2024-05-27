@@ -49,26 +49,28 @@ const ProfilePage = () => {
 
   return (
     <div className={styles.profileContainer}>
-      {profileLoading ? (
-        <div className={styles.center}>
-          <Spinner variant="primary" />
-        </div>
-      ) : !profileLoadingError ? (
-        isLoggedInUserProfile ? (
-          <div className={styles.center}>
-            <ProfileAuthCard
-              username={profileUser!.username!}
-              email={profileUser!.email}
-            />
+      <div className={styles.center}>
+        {profileLoading ? (
+          <div>
+            <Spinner variant="primary" />
           </div>
+        ) : !profileLoadingError ? (
+          isLoggedInUserProfile ? (
+            <div>
+              <ProfileAuthCard
+                username={profileUser!.username!}
+                email={profileUser!.email}
+              />
+            </div>
+          ) : (
+            <div>
+              <ProfileCard username={profileUser?.username!} />
+            </div>
+          )
         ) : (
-          <div className={styles.center}>
-            <ProfileCard username={profileUser?.username!} />
-          </div>
-        )
-      ) : (
-        <h5 className={styles.center}>{profileLoadingError}</h5>
-      )}
+          <h5>{profileLoadingError}</h5>
+        )}
+      </div>
     </div>
   );
 };
