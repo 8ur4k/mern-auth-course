@@ -2,7 +2,7 @@ import { Card, Button } from "react-bootstrap";
 
 interface UserProps {
   username: string;
-  email?: string;
+  email: string;
 }
 
 const ProfileAuthCard = (user: UserProps) => {

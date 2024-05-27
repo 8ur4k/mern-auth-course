@@ -56,8 +56,8 @@ const ProfilePage = () => {
         (isProfileAuth ? (
           <div className={styles.center}>
             <ProfileAuthCard
-              username={profileUser?.username!}
-              email={profileUser?.email}
+              username={profileUser!.username!}
+              email={profileUser!.email}
             />
           </div>
         ) : (
