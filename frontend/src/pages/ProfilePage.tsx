@@ -3,7 +3,7 @@ import { User } from "../models/user";
 import * as UserApi from "../network/users_api";
 import { Spinner } from "react-bootstrap";
 import styles from "../styles/ProfilePage.module.css";
-import ProfileAuthCard from "../components/ProfileAuthCard";
+import ProfileAuthCard from "../components/LoggedInUserProfileCard";
 import ProfileCard from "../components/ProfileCard";
 import { useParams } from "react-router-dom";
 
