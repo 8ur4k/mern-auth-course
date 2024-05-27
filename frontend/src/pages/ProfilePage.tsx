@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { User } from "../models/user";
 import * as UserApi from "../network/users_api";
+import createHttpError from "http-errors";
 import { Spinner } from "react-bootstrap";
 import styles from "../styles/ProfilePage.module.css";
 import ProfileAuthCard from "../components/LoggedInUserProfileCard";
@@ -12,13 +13,17 @@ const ProfilePage = () => {
   const [profileLoading, setProfileLoading] = useState(true);
   const [showProfileLoadingError, setShowProfileLoadingError] = useState(false);
   const [isProfileAuth, setIsProfileAuth] = useState<Boolean>(false);
-  const profileUsername = useParams().username || "";
+  const profileUsername = useParams().username;
 
   useEffect(() => {
     async function setUser() {
       try {
         setProfileLoading(true);
         setShowProfileLoadingError(false);
+
+        if (!profileUsername) {
+          throw createHttpError(400, "Invalid parameters");
+        }
 
         const authUser = await UserApi.getLoggedInUser();
         const paramUser = await UserApi.getUser({
