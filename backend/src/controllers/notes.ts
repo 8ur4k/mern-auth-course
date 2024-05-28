@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
 import NoteModel from "../models/note";
+import DeletedNoteModel from "../models/deletedNote";
 import createHttpError from "http-errors";
 import * as z from "zod";
 import mongoose from "mongoose";
@@ -140,9 +141,15 @@ export const deleteNote: RequestHandler = async (req, res, next) => {
       throw createHttpError(401, "You cannot access this note");
     }
 
+    const deletedNote = await DeletedNoteModel.create({
+      userId: authenticatedUserId,
+      title: note.title,
+      text: note.text,
+    });
+
     await note.remove();
 
-    res.sendStatus(204);
+    res.status(204).json(deletedNote);
   } catch (error) {
     next(error);
   }
