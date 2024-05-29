@@ -171,3 +171,31 @@ export const getDeletedNotes: RequestHandler = async (req, res, next) => {
   }
 };
 
+export const restoreDeletedNote: RequestHandler = async (req, res, next) => {
+  const noteId = req.params.noteId;
+  const authenticatedUserId = req.session.userId;
+
+  try {
+    assertIsDefined(authenticatedUserId);
+
+    if (!mongoose.isValidObjectId(noteId)) {
+      throw createHttpError(400, "Invalid note ID");
+    }
+
+    const note = await NoteModel.findById(noteId).exec();
+
+    if (!note) {
+      throw createHttpError(404, "Note not found");
+    }
+
+    if (!note.userId.equals(authenticatedUserId)) {
+      throw createHttpError(401, "You cannot access this note");
+    }
+
+    await NoteModel.findByIdAndUpdate(noteId, { $unset: { deletedAt: 1 } });
+
+    res.status(200).json(note);
+  } catch (error) {
+    next(error);
+  }
+};

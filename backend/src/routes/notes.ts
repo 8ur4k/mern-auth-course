@@ -7,6 +7,7 @@ router.get("/", NotesController.getNotes);
 
 router.get("/trash", NotesController.getDeletedNotes);
 
+router.patch("/trash/:noteId", NotesController.restoreDeletedNote);
 
 router.get("/:noteId", NotesController.getNote);
 
