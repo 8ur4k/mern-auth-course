@@ -153,3 +153,21 @@ export const deleteNote: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getDeletedNotes: RequestHandler = async (req, res, next) => {
+  const authenticatedUserId = req.session.userId;
+
+  try {
+    assertIsDefined(authenticatedUserId);
+
+    const notes = await NoteModel.find({
+      userId: authenticatedUserId,
+      deletedAt: { $ne: null },
+    }).exec();
+    console.log(notes);
+    res.status(200).json(notes);
+  } catch (error) {
+    next(error);
+  }
+};
+

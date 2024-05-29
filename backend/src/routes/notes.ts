@@ -5,6 +5,9 @@ const router = express.Router();
 
 router.get("/", NotesController.getNotes);
 
+router.get("/trash", NotesController.getDeletedNotes);
+
+
 router.get("/:noteId", NotesController.getNote);
 
 router.post("/", NotesController.createNote);
