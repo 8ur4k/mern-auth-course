@@ -5,6 +5,7 @@ const noteSchema = new Schema(
     userId: { type: Schema.Types.ObjectId, required: true },
     title: { type: String, required: true },
     text: { type: String },
+    deletedAt: { type: Date, default: null, expires: "10s" },
   },
   { timestamps: true }
 );

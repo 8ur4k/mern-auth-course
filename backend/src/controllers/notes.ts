@@ -1,6 +1,5 @@
 import { RequestHandler } from "express";
 import NoteModel from "../models/note";
-import DeletedNoteModel from "../models/deletedNote";
 import createHttpError from "http-errors";
 import * as z from "zod";
 import mongoose from "mongoose";
@@ -12,7 +11,11 @@ export const getNotes: RequestHandler = async (req, res, next) => {
   try {
     assertIsDefined(authenticatedUserId);
 
-    const notes = await NoteModel.find({ userId: authenticatedUserId }).exec();
+    const notes = await NoteModel.find({
+      userId: authenticatedUserId,
+      deletedAt: null,
+    }).exec();
+    console.log(notes);
     res.status(200).json(notes);
   } catch (error) {
     next(error);
@@ -141,15 +144,11 @@ export const deleteNote: RequestHandler = async (req, res, next) => {
       throw createHttpError(401, "You cannot access this note");
     }
 
-    const deletedNote = await DeletedNoteModel.create({
-      userId: authenticatedUserId,
-      title: note.title,
-      text: note.text,
-    });
+    note.deletedAt = new Date();
 
-    await note.remove();
+    await note.save();
 
-    res.status(204).json(deletedNote);
+    res.sendStatus(204);
   } catch (error) {
     next(error);
   }
