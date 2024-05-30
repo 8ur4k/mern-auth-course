@@ -7,6 +7,7 @@ import * as UserApi from "./network/users_api";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import NotesPage from "./pages/NotesPage";
+import TrashPage from "./pages/TrashPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import ProfilePage from "./pages/ProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -47,6 +48,10 @@ function App() {
             <Route
               path="/"
               element={<NotesPage loggedInUser={loggedInUser} />}
+            />
+            <Route
+              path="/trash"
+              element={<TrashPage loggedInUser={loggedInUser} />}
             />
             <Route path="/users/:username" element={<ProfilePage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
