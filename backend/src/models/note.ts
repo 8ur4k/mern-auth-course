@@ -10,7 +10,7 @@ const noteSchema = new Schema(
   { timestamps: true }
 );
 
-noteSchema.index({ deletedAt: 1 }, { expireAfterSeconds: 10 });
+noteSchema.index({ deletedAt: 1 }, { expireAfterSeconds: 86400 });
 
 type Note = InferSchemaType<typeof noteSchema>;
 
