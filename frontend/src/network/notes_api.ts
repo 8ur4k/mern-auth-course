@@ -1,11 +1,18 @@
 import { Note } from "../models/note";
+import { DeletedNote } from "../models/deletedNote";
 import { fetchData } from "./fetch_data";
 
 export async function fetchNotes(): Promise<Note[]> {
   const response = await fetchData("/api/notes", {
     method: "GET",
   });
-  return response.json();
+
+  const notes = await response.json();
+  const filteredNotes = notes.filter(
+    (note: DeletedNote) => note.deletedAt === undefined
+  );
+
+  return filteredNotes;
 }
 
 export interface NoteInput {
