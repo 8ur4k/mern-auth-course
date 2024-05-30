@@ -55,6 +55,16 @@ export async function fetcDeletedNotes(): Promise<DeletedNote[]> {
   return filteredNotes;
 }
 
+export async function restoreDeletedNote(noteId: string): Promise<Note> {
+  const response = await fetchData("/api/notes/trash/" + noteId, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return response.json();
+}
+
 export async function permaDeleteNote(noteId: string): Promise<Note> {
   const response = await fetchData("/api/notes/trash/" + noteId, {
     method: "DELETE",
