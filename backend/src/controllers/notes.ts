@@ -199,3 +199,31 @@ export const restoreDeletedNote: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+
+export const permaDeleteNote: RequestHandler = async (req, res, next) => {
+  const noteId = req.params.noteId;
+  const authenticatedUserId = req.session.userId;
+
+  try {
+    assertIsDefined(authenticatedUserId);
+
+    if (!mongoose.isValidObjectId(noteId)) {
+      throw createHttpError(400, "Invalid note ID");
+    }
+    const note = await NoteModel.findById(noteId).exec();
+
+    if (!note) {
+      throw createHttpError(404, "Note not found");
+    }
+
+    if (!note.userId.equals(authenticatedUserId)) {
+      throw createHttpError(401, "You cannot access this note");
+    }
+
+    await note.remove();
+
+    res.sendStatus(200);
+  } catch (error) {
+    next(error);
+  }
+};
