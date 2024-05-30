@@ -4,7 +4,7 @@ import LoginModal from "./components/LoginModal";
 import SignUpModal from "./components/SignUpModal";
 import { User } from "./models/user";
 import * as UserApi from "./network/users_api";
-import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import NotesPage from "./pages/NotesPage";
 import PrivacyPage from "./pages/PrivacyPage";

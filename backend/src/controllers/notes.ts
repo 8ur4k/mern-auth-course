@@ -15,7 +15,6 @@ export const getNotes: RequestHandler = async (req, res, next) => {
       userId: authenticatedUserId,
       deletedAt: null,
     }).exec();
-    console.log(notes);
     res.status(200).json(notes);
   } catch (error) {
     next(error);
@@ -164,7 +163,6 @@ export const getDeletedNotes: RequestHandler = async (req, res, next) => {
       userId: authenticatedUserId,
       deletedAt: { $ne: null },
     }).exec();
-    console.log(notes);
     res.status(200).json(notes);
   } catch (error) {
     next(error);
