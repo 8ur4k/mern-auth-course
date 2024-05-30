@@ -7,14 +7,16 @@ import styles from "../styles/NotesPage.module.css";
 import stylesUtils from "../styles/utils.module.css";
 import AddEditNoteDialog from "./AddEditNoteDialog";
 import Note from "./Note";
+import useTrashCountStore from "../store/trashCountStore";
 
 const NotesPageLoggedinView = () => {
   const [notes, setNotes] = useState<NoteModel[]>([]);
   const [notesLoading, setNotesLoading] = useState(true);
   const [showNotesLoadingError, setShowNotesLoadingError] = useState(false);
-
   const [showAddEditNoteDialog, setShowAddEditNoteDialog] = useState(false);
   const [noteToEdit, setNoteToEdit] = useState<NoteModel | null>(null);
+
+  const { increment } = useTrashCountStore();
 
   useEffect(() => {
     async function loadNotes() {
@@ -36,8 +38,9 @@ const NotesPageLoggedinView = () => {
 
   async function deleteNote(note: NoteModel) {
     try {
-      await NotesApi.deleteNote(note._id);
       setNotes(notes.filter((existingNote) => existingNote._id !== note._id));
+      increment();
+      await NotesApi.deleteNote(note._id);
     } catch (error) {
       console.error(error);
       alert(error);

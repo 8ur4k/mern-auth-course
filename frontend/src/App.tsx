@@ -11,13 +11,14 @@ import PrivacyPage from "./pages/PrivacyPage";
 import ProfilePage from "./pages/ProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import styles from "./styles/App.module.css";
+import useTrashCountStore from "./store/trashCountStore";
 
 function App() {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
-  console.log("a");
+  const trashLength = useTrashCountStore((state) => state.count);
 
   useEffect(() => {
     async function fetchLoggedInUser() {
@@ -36,6 +37,7 @@ function App() {
       <div>
         <NavBar
           loggedInUser={loggedInUser}
+          trashLength={trashLength}
           onLoginClicked={() => setShowLoginModal(true)}
           onSignUpClicked={() => setShowSignUpModal(true)}
           onlogoutSuccessful={() => setLoggedInUser(null)}
