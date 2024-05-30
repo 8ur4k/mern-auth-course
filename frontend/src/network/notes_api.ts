@@ -41,6 +41,20 @@ export async function updateNote(
 export async function deleteNote(noteId: string) {
   await fetchData("/api/notes/" + noteId, { method: "DELETE" });
 }
+
+export async function fetcDeletedNotes(): Promise<DeletedNote[]> {
+  const response = await fetchData("/api/notes/trash", {
+    method: "GET",
+  });
+
+  const notes = await response.json();
+  const filteredNotes = notes.filter(
+    (note: DeletedNote) => note.deletedAt !== null
+  );
+
+  return filteredNotes;
+}
+
 export async function permaDeleteNote(noteId: string): Promise<Note> {
   const response = await fetchData("/api/notes/trash/" + noteId, {
     method: "DELETE",
