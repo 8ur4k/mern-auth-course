@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Col, Row, Spinner } from "react-bootstrap";
+import { useState, useEffect } from "react";
+import { Col, Row, Spinner, Modal, Button } from "react-bootstrap";
 import { DeletedNote as DeletedNoteModel } from "../models/deletedNote";
 import * as NotesApi from "../network/notes_api";
 import styles from "../styles/NotesPage.module.css";
@@ -10,6 +10,11 @@ const TrashPageLoggedinView = () => {
   const [deletedNotes, setDeletedNotes] = useState<DeletedNoteModel[]>([]);
   const [deletedNotesLoading, setDeletedNotesLoading] = useState(true);
   const [showNotesLoadingError, setShowNotesLoadingError] = useState(false);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [noteToDelete, setNoteToDelete] = useState<DeletedNoteModel | null>(
+    null
+  );
 
   const { decrement } = useTrashCountStore();
 
@@ -31,16 +36,22 @@ const TrashPageLoggedinView = () => {
     loadNotes();
   }, []);
 
-  async function permaDeleteNote(note: DeletedNoteModel) {
+  async function permaDeleteNote() {
+    if (!noteToDelete) return;
     try {
       setDeletedNotes(
-        deletedNotes.filter((existingNote) => existingNote._id !== note._id)
+        deletedNotes.filter(
+          (existingNote) => existingNote._id !== noteToDelete._id
+        )
       );
       decrement();
-      await NotesApi.permaDeleteNote(note._id);
+      await NotesApi.permaDeleteNote(noteToDelete._id);
     } catch (error) {
       console.error(error);
       alert(error);
+    } finally {
+      setShowDeleteModal(false);
+      setNoteToDelete(null);
     }
   }
 
@@ -57,6 +68,11 @@ const TrashPageLoggedinView = () => {
     }
   }
 
+  const handleDeleteClick = (note: DeletedNoteModel) => {
+    setNoteToDelete(note);
+    setShowDeleteModal(true);
+  };
+
   const notesGrid = (
     <Row xs={1} md={2} xl={3} className={`g-4 ${styles.notesGrid}`}>
       {deletedNotes.map((note) => (
@@ -64,7 +80,7 @@ const TrashPageLoggedinView = () => {
           <DeletedNote
             note={note}
             className={styles.note}
-            onDeleteNoteClicked={permaDeleteNote}
+            onDeleteNoteClicked={handleDeleteClick}
             onRestoreNoteClicked={restoreDeletedNote}
           />
         </Col>
@@ -81,6 +97,23 @@ const TrashPageLoggedinView = () => {
       {!deletedNotesLoading && !showNotesLoadingError && (
         <>{deletedNotes.length > 0 ? notesGrid : <p>Trash is empty</p>}</>
       )}
+
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to permanently delete this note?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={permaDeleteNote}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };
