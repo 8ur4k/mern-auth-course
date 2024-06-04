@@ -2,7 +2,7 @@ import { Container } from "react-bootstrap";
 import TrashPageLoggedinView from "../components/TrashPageLoggedinView";
 import TrashPageLoggedOutView from "../components/TrashPageLoggedOutView";
 import { User } from "../models/user";
-import styles from "../styles/NotesPage.module.css";
+import styles from "../styles/TrashPage.module.css";
 
 interface TrashPageProps {
   loggedInUser: User | null;

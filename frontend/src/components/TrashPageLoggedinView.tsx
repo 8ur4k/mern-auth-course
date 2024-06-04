@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Col, Row, Spinner, Modal, Button } from "react-bootstrap";
 import { DeletedNote as DeletedNoteModel } from "../models/deletedNote";
 import * as NotesApi from "../network/notes_api";
-import styles from "../styles/NotesPage.module.css";
+import styles from "../styles/TrashPage.module.css";
 import DeletedNote from "./DeletedNote";
 import useTrashCountStore from "../store/trashCountStore";
 
