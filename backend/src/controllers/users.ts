@@ -19,7 +19,13 @@ const GetUserParamsSchema = z.object({ username: z.string() });
 
 export const getUser: RequestHandler = async (req, res, next) => {
   try {
-    const { username } = GetUserParamsSchema.parse(req.params);
+    const { data, error } = GetUserParamsSchema.safeParse(req.params);
+
+    if (error) {
+      throw createHttpError(400, "Invalid parameters");
+    }
+
+    const { username } = data;
     const user = await UserModel.findOne({ username }).exec();
 
     if (!user) {
@@ -39,6 +45,7 @@ const SignUpRequestBodySchema = z.object({
 export const signUp: RequestHandler = async (req, res, next) => {
   try {
     const { data, error } = SignUpRequestBodySchema.safeParse(req.body);
+
     if (error) {
       throw createHttpError(400, "Invalid parameters");
     }
@@ -84,12 +91,15 @@ const LoginRequestBodySchema = z.object({
   username: z.string(),
   password: z.string(),
 });
+
 export const login: RequestHandler = async (req, res, next) => {
   const { data, error } = LoginRequestBodySchema.safeParse(req.body);
 
-  try {
-    if (error) throw createHttpError(400, "Invalid parameters");
+  if (error) {
+    throw createHttpError(400, "Invalid parameters");
+  }
 
+  try {
     const { username, password } = data;
 
     const user = await UserModel.findOne({ username: username })

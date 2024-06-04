@@ -21,9 +21,19 @@ export const getNotes: RequestHandler = async (req, res, next) => {
   }
 };
 
+const GetNoteParamsSchema = z.object({
+  noteId: z.string(),
+});
+
 export const getNote: RequestHandler = async (req, res, next) => {
-  const noteId = req.params.noteId;
+  const { data, error } = GetNoteParamsSchema.safeParse(req.params);
   const authenticatedUserId = req.session.userId;
+
+  if (error) {
+    throw createHttpError(400, "Invalid parameters");
+  }
+
+  const { noteId } = data;
 
   try {
     assertIsDefined(authenticatedUserId);
@@ -53,9 +63,11 @@ const CreateNoteBodySchema = z.object({ title: z.string(), text: z.string() });
 export const createNote: RequestHandler = async (req, res, next) => {
   const authenticatedUserId = req.session.userId;
   const { data, error } = CreateNoteBodySchema.safeParse(req.body);
+
   if (error) {
     throw createHttpError(400, "Invalid parameters");
   }
+
   const { title, text } = data;
 
   try {
@@ -86,13 +98,18 @@ const UpdateNoteParamsSchema = z.object({
 });
 
 export const updateNote: RequestHandler = async (req, res, next) => {
-  const { noteId } = UpdateNoteParamsSchema.parse(req.params);
-  const { data, error } = UpdateNoteBodySchema.safeParse(req.body);
-  if (error) {
+  const { data: paramsData, error: paramsError } =
+    UpdateNoteParamsSchema.safeParse(req.params);
+  const { data: bodyData, error: bodyError } = UpdateNoteBodySchema.safeParse(
+    req.body
+  );
+
+  if (bodyError || paramsError) {
     throw createHttpError(400, "Invalid parameters");
   }
-  const newTitle = data.title;
-  const newText = data.text;
+
+  const { noteId } = paramsData;
+  const { text: newText, title: newTitle } = bodyData;
   const authenticatedUserId = req.session.userId;
 
   try {
@@ -123,9 +140,19 @@ export const updateNote: RequestHandler = async (req, res, next) => {
   }
 };
 
+const deleteNoteParamsSchema = z.object({
+  noteId: z.string(),
+});
+
 export const deleteNote: RequestHandler = async (req, res, next) => {
-  const noteId = req.params.noteId;
+  const { data, error } = deleteNoteParamsSchema.safeParse(req.params);
   const authenticatedUserId = req.session.userId;
+
+  if (error) {
+    throw createHttpError(400, "Invalid parameters");
+  }
+
+  const { noteId } = data;
 
   try {
     assertIsDefined(authenticatedUserId);
@@ -169,9 +196,19 @@ export const getDeletedNotes: RequestHandler = async (req, res, next) => {
   }
 };
 
+const restoreDeletedNoteSchema = z.object({
+  noteId: z.string(),
+});
+
 export const restoreDeletedNote: RequestHandler = async (req, res, next) => {
-  const noteId = req.params.noteId;
+  const { data, error } = restoreDeletedNoteSchema.safeParse(req.params);
   const authenticatedUserId = req.session.userId;
+
+  if (error) {
+    throw createHttpError(400, "Invalid parameters");
+  }
+
+  const { noteId } = data;
 
   try {
     assertIsDefined(authenticatedUserId);
@@ -198,9 +235,19 @@ export const restoreDeletedNote: RequestHandler = async (req, res, next) => {
   }
 };
 
+const permaDeleteNoteSchema = z.object({
+  noteId: z.string(),
+});
+
 export const permaDeleteNote: RequestHandler = async (req, res, next) => {
-  const noteId = req.params.noteId;
+  const { data, error } = permaDeleteNoteSchema.safeParse(req.params);
   const authenticatedUserId = req.session.userId;
+
+  if (error) {
+    throw createHttpError(400, "Invalid parameters");
+  }
+
+  const { noteId } = data;
 
   try {
     assertIsDefined(authenticatedUserId);
