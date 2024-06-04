@@ -1,4 +1,4 @@
-import styles from "../styles/Note.module.css";
+import styles from "../styles/DeletedNote.module.css";
 import stylesUtils from "../styles/utils.module.css";
 import { Card } from "react-bootstrap";
 import { DeletedNote as DeletedNoteModel } from "../models/deletedNote";
