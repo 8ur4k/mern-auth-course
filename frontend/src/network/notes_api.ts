@@ -72,12 +72,11 @@ export async function restoreDeletedNote(noteId: string): Promise<Note> {
   return response.json();
 }
 
-export async function permaDeleteNote(noteId: string): Promise<Note> {
-  const response = await fetchData("/api/notes/trash/" + noteId, {
+export async function permaDeleteNote(noteId: string) {
+  await fetchData("/api/notes/trash/" + noteId, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
     },
   });
-  return response.json();
 }
