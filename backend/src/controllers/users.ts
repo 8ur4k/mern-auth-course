@@ -1,8 +1,8 @@
 import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import UserModel from "../models/user";
-import * as z from "zod";
 import bcrypt from "bcrypt";
+import * as schemas from "./Schemas/usersSchemas";
 
 export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
   try {
@@ -15,11 +15,9 @@ export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
   }
 };
 
-const GetUserParamsSchema = z.object({ username: z.string() });
-
 export const getUser: RequestHandler = async (req, res, next) => {
   try {
-    const { data, error } = GetUserParamsSchema.safeParse(req.params);
+    const { data, error } = schemas.GetUserParamsSchema.safeParse(req.params);
 
     if (error) {
       throw createHttpError(400, "Invalid parameters");
@@ -37,14 +35,9 @@ export const getUser: RequestHandler = async (req, res, next) => {
   }
 };
 
-const SignUpRequestBodySchema = z.object({
-  username: z.string(),
-  email: z.string(),
-  password: z.string(),
-});
 export const signUp: RequestHandler = async (req, res, next) => {
   try {
-    const { data, error } = SignUpRequestBodySchema.safeParse(req.body);
+    const { data, error } = schemas.SignUpRequestBodySchema.safeParse(req.body);
 
     if (error) {
       throw createHttpError(400, "Invalid parameters");
@@ -87,13 +80,8 @@ export const signUp: RequestHandler = async (req, res, next) => {
   }
 };
 
-const LoginRequestBodySchema = z.object({
-  username: z.string(),
-  password: z.string(),
-});
-
 export const login: RequestHandler = async (req, res, next) => {
-  const { data, error } = LoginRequestBodySchema.safeParse(req.body);
+  const { data, error } = schemas.LoginRequestBodySchema.safeParse(req.body);
 
   if (error) {
     throw createHttpError(400, "Invalid parameters");
