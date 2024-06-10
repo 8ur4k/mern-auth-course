@@ -12,7 +12,9 @@ const TrashPageLoggedinView = () => {
   const [showNotesLoadingError, setShowNotesLoadingError] = useState(false);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [noteToTrash, setNoteToTrash] = useState<DeletedNoteModel | null>(null);
+  const [noteToDelete, setNoteToDelete] = useState<DeletedNoteModel | null>(
+    null
+  );
 
   const { decrement } = useTrashCountStore();
 
@@ -35,21 +37,21 @@ const TrashPageLoggedinView = () => {
   }, []);
 
   async function deleteNote() {
-    if (!noteToTrash) return;
+    if (!noteToDelete) return;
     try {
       setDeletedNotes(
         deletedNotes.filter(
-          (existingNote) => existingNote._id !== noteToTrash._id
+          (existingNote) => existingNote._id !== noteToDelete._id
         )
       );
       decrement();
-      await NotesApi.deleteNote(noteToTrash._id);
+      await NotesApi.deleteNote(noteToDelete._id);
     } catch (error) {
       console.error(error);
       alert(error);
     } finally {
       setShowDeleteModal(false);
-      setNoteToTrash(null);
+      setNoteToDelete(null);
     }
   }
 
@@ -66,8 +68,8 @@ const TrashPageLoggedinView = () => {
     }
   }
 
-  const handleTrashClick = (note: DeletedNoteModel) => {
-    setNoteToTrash(note);
+  const handleDeleteClick = (note: DeletedNoteModel) => {
+    setNoteToDelete(note);
     setShowDeleteModal(true);
   };
 
@@ -78,7 +80,7 @@ const TrashPageLoggedinView = () => {
           <DeletedNote
             note={note}
             className={styles.note}
-            onTrashNoteClicked={handleTrashClick}
+            onDeleteNoteClicked={handleDeleteClick}
             onRestoreNoteClicked={restoreNote}
           />
         </Col>
