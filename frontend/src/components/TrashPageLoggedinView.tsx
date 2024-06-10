@@ -53,13 +53,13 @@ const TrashPageLoggedinView = () => {
     }
   }
 
-  async function restoreDeletedNote(note: DeletedNoteModel) {
+  async function restoreNote(note: DeletedNoteModel) {
     try {
       setDeletedNotes(
         deletedNotes.filter((existingNote) => existingNote._id !== note._id)
       );
       decrement();
-      await NotesApi.restoreDeletedNote(note._id);
+      await NotesApi.restoreNote(note._id);
     } catch (error) {
       console.error(error);
       alert(error);
@@ -79,7 +79,7 @@ const TrashPageLoggedinView = () => {
             note={note}
             className={styles.note}
             onTrashNoteClicked={handleTrashClick}
-            onRestoreNoteClicked={restoreDeletedNote}
+            onRestoreNoteClicked={restoreNote}
           />
         </Col>
       ))}

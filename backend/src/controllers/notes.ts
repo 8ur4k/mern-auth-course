@@ -176,10 +176,8 @@ export const getDeletedNotes: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const restoreDeletedNote: RequestHandler = async (req, res, next) => {
-  const { data, error } = schemas.RestoreDeletedNoteSchema.safeParse(
-    req.params
-  );
+export const restoreNote: RequestHandler = async (req, res, next) => {
+  const { data, error } = schemas.RestoreNoteSchema.safeParse(req.params);
   const authenticatedUserId = req.session.userId;
 
   if (error) {

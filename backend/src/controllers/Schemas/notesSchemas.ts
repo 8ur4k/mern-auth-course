@@ -22,7 +22,7 @@ export const TrashNoteParamsSchema = z.object({
   noteId: z.string(),
 });
 
-export const RestoreDeletedNoteSchema = z.object({
+export const RestoreNoteSchema = z.object({
   noteId: z.string(),
 });
 

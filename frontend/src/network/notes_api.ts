@@ -62,9 +62,9 @@ export async function fetcDeletedNotes(): Promise<DeletedNote[]> {
   return filteredNotes;
 }
 
-export async function restoreDeletedNote(noteId: string): Promise<Note> {
-  const response = await fetchData("/api/notes/trash/" + noteId, {
-    method: "PATCH",
+export async function restoreNote(noteId: string): Promise<Note> {
+  const response = await fetchData("/api/notes/trash/restore/" + noteId, {
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
