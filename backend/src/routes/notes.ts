@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get("/", NotesController.getNotes);
 
-router.get("/trash", NotesController.getDeletedNotes);
+router.get("/trash", NotesController.getTrashedNotes);
 
 router.post("/trash/restore/:noteId", NotesController.restoreNote);
 

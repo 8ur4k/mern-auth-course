@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
 import { Col, Row, Spinner, Modal, Button } from "react-bootstrap";
-import { DeletedNote as DeletedNoteModel } from "../models/deletedNote";
+import { TrashedNote as TrashedNoteModel } from "../models/trashedNote";
 import * as NotesApi from "../network/notes_api";
-import styles from "../styles/TrashPage.module.css";
-import DeletedNote from "./DeletedNote";
+import styles from "../styles/TrashedNote.module.css";
+import TrashedNote from "./TrashedNote";
 import useTrashCountStore from "../store/trashCountStore";
 
 const TrashPageLoggedinView = () => {
-  const [deletedNotes, setDeletedNotes] = useState<DeletedNoteModel[]>([]);
-  const [deletedNotesLoading, setDeletedNotesLoading] = useState(true);
+  const [trashedNotes, setTrashedNotes] = useState<TrashedNoteModel[]>([]);
+  const [trashedNotesLoading, setTrashedNotesLoading] = useState(true);
   const [showNotesLoadingError, setShowNotesLoadingError] = useState(false);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [noteToDelete, setNoteToDelete] = useState<DeletedNoteModel | null>(
+  const [noteToDelete, setNoteToDelete] = useState<TrashedNoteModel | null>(
     null
   );
 
@@ -22,15 +22,15 @@ const TrashPageLoggedinView = () => {
     async function loadNotes() {
       try {
         setShowNotesLoadingError(false);
-        setDeletedNotesLoading(true);
-        const deletedNotes = await NotesApi.fetcDeletedNotes();
-        setDeletedNotes(deletedNotes);
+        setTrashedNotesLoading(true);
+        const trashedNotes = await NotesApi.fetchTrashedNotes();
+        setTrashedNotes(trashedNotes);
       } catch (error) {
         console.error(error);
         alert(error);
         setShowNotesLoadingError(true);
       } finally {
-        setDeletedNotesLoading(false);
+        setTrashedNotesLoading(false);
       }
     }
     loadNotes();
@@ -39,8 +39,8 @@ const TrashPageLoggedinView = () => {
   async function deleteNote() {
     if (!noteToDelete) return;
     try {
-      setDeletedNotes(
-        deletedNotes.filter(
+      setTrashedNotes(
+        trashedNotes.filter(
           (existingNote) => existingNote._id !== noteToDelete._id
         )
       );
@@ -55,10 +55,10 @@ const TrashPageLoggedinView = () => {
     }
   }
 
-  async function restoreNote(note: DeletedNoteModel) {
+  async function restoreNote(note: TrashedNoteModel) {
     try {
-      setDeletedNotes(
-        deletedNotes.filter((existingNote) => existingNote._id !== note._id)
+      setTrashedNotes(
+        trashedNotes.filter((existingNote) => existingNote._id !== note._id)
       );
       decrement();
       await NotesApi.restoreNote(note._id);
@@ -68,16 +68,16 @@ const TrashPageLoggedinView = () => {
     }
   }
 
-  const handleDeleteClick = (note: DeletedNoteModel) => {
+  const handleDeleteClick = (note: TrashedNoteModel) => {
     setNoteToDelete(note);
     setShowDeleteModal(true);
   };
 
   const notesGrid = (
     <Row xs={1} md={2} xl={3} className={`g-4 ${styles.notesGrid}`}>
-      {deletedNotes.map((note) => (
+      {trashedNotes.map((note) => (
         <Col key={note._id}>
-          <DeletedNote
+          <TrashedNote
             note={note}
             onDeleteNoteClicked={handleDeleteClick}
             onRestoreNoteClicked={restoreNote}
@@ -89,12 +89,12 @@ const TrashPageLoggedinView = () => {
 
   return (
     <>
-      {deletedNotesLoading && <Spinner animation="border" variant="primary" />}
+      {trashedNotesLoading && <Spinner animation="border" variant="primary" />}
       {showNotesLoadingError && (
         <p>Something went wrong. Please refresh the page</p>
       )}
-      {!deletedNotesLoading && !showNotesLoadingError && (
-        <>{deletedNotes.length > 0 ? notesGrid : <p>Trash is empty</p>}</>
+      {!trashedNotesLoading && !showNotesLoadingError && (
+        <>{trashedNotes.length > 0 ? notesGrid : <p>Trash is empty</p>}</>
       )}
 
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>

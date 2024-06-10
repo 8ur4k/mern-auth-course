@@ -1,14 +1,14 @@
-import styles from "../styles/DeletedNote.module.css";
+import styles from "../styles/TrashedNote.module.css";
 import stylesUtils from "../styles/utils.module.css";
 import { Card } from "react-bootstrap";
-import { DeletedNote as DeletedNoteModel } from "../models/deletedNote";
+import { TrashedNote as TrashedNoteModel } from "../models/trashedNote";
 import { MdDelete, MdOutlineSettingsBackupRestore } from "react-icons/md";
 
-function formatExpiresIn(deletedAt: string): string {
+function formatExpiresIn(trashedAt: string): string {
   const now = new Date();
-  const deletedAtDate = new Date(deletedAt);
+  const trashedAtDate = new Date(trashedAt);
 
-  const expiresAt = new Date(deletedAtDate.getTime() + 24 * 60 * 60 * 1000);
+  const expiresAt = new Date(trashedAtDate.getTime() + 24 * 60 * 60 * 1000);
   const timeDifference = expiresAt.getTime() - now.getTime();
 
   if (timeDifference <= 0) {
@@ -25,20 +25,20 @@ function formatExpiresIn(deletedAt: string): string {
   }
 }
 
-interface DeletedNoteProps {
-  note: DeletedNoteModel;
-  onDeleteNoteClicked: (note: DeletedNoteModel) => void;
-  onRestoreNoteClicked: (note: DeletedNoteModel) => void;
+interface TrashedNoteProps {
+  note: TrashedNoteModel;
+  onDeleteNoteClicked: (note: TrashedNoteModel) => void;
+  onRestoreNoteClicked: (note: TrashedNoteModel) => void;
 }
 
-const DeletedNote = ({
+const TrashedNote = ({
   note,
   onDeleteNoteClicked,
   onRestoreNoteClicked,
-}: DeletedNoteProps) => {
-  const { title, text, deletedAt } = note;
+}: TrashedNoteProps) => {
+  const { title, text, trashedAt } = note;
 
-  const expiresIn = "Expires in: " + formatExpiresIn(deletedAt);
+  const expiresIn = "Expires in: " + formatExpiresIn(trashedAt);
 
   return (
     <Card className={`${styles.noteCard} ${styles.note}`}>
@@ -67,4 +67,4 @@ const DeletedNote = ({
   );
 };
 
-export default DeletedNote;
+export default TrashedNote;

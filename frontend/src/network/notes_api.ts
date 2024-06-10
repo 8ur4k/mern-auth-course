@@ -1,5 +1,5 @@
 import { Note } from "../models/note";
-import { DeletedNote } from "../models/deletedNote";
+import { TrashedNote } from "../models/trashedNote";
 import { fetchData } from "./fetch_data";
 
 export async function fetchNotes(): Promise<Note[]> {
@@ -9,7 +9,7 @@ export async function fetchNotes(): Promise<Note[]> {
 
   const notes = await response.json();
   const filteredNotes = notes.filter(
-    (note: DeletedNote) => note.deletedAt === undefined
+    (note: TrashedNote) => note.trashedAt === undefined
   );
 
   return filteredNotes;
@@ -49,14 +49,14 @@ export async function trashNote(noteId: string) {
   await fetchData(`/api/notes/${noteId}/trash`, { method: "POST" });
 }
 
-export async function fetcDeletedNotes(): Promise<DeletedNote[]> {
+export async function fetchTrashedNotes(): Promise<TrashedNote[]> {
   const response = await fetchData("/api/notes/trash", {
     method: "GET",
   });
 
   const notes = await response.json();
   const filteredNotes = notes.filter(
-    (note: DeletedNote) => note.deletedAt !== null
+    (note: TrashedNote) => note.trashedAt !== null
   );
 
   return filteredNotes;

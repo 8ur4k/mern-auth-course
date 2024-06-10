@@ -13,7 +13,7 @@ export const getNotes: RequestHandler = async (req, res, next) => {
 
     const notes = await NoteModel.find({
       userId: authenticatedUserId,
-      deletedAt: null,
+      trashedAt: null,
     }).exec();
     res.status(200).json(notes);
   } catch (error) {
@@ -150,7 +150,7 @@ export const trashNote: RequestHandler = async (req, res, next) => {
       throw createHttpError(401, "You cannot access this note");
     }
 
-    note.deletedAt = new Date();
+    note.trashedAt = new Date();
 
     await note.save();
 
@@ -160,7 +160,7 @@ export const trashNote: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const getDeletedNotes: RequestHandler = async (req, res, next) => {
+export const getTrashedNotes: RequestHandler = async (req, res, next) => {
   const authenticatedUserId = req.session.userId;
 
   try {
@@ -168,7 +168,7 @@ export const getDeletedNotes: RequestHandler = async (req, res, next) => {
 
     const notes = await NoteModel.find({
       userId: authenticatedUserId,
-      deletedAt: { $ne: null },
+      trashedAt: { $ne: null },
     }).exec();
     res.status(200).json(notes);
   } catch (error) {
@@ -203,7 +203,7 @@ export const restoreNote: RequestHandler = async (req, res, next) => {
       throw createHttpError(401, "You cannot access this note");
     }
 
-    await NoteModel.findByIdAndUpdate(noteId, { $unset: { deletedAt: 1 } });
+    await NoteModel.findByIdAndUpdate(noteId, { $unset: { trashedAt: 1 } });
 
     res.status(200).json(note);
   } catch (error) {

@@ -2,7 +2,7 @@ import { Container } from "react-bootstrap";
 import NotesPageLoggedinView from "../components/NotesPageLoggedinView";
 import NotesPageLoggedOutView from "../components/NotesPageLoggedOutView";
 import { User } from "../models/user";
-import styles from "../styles/NotesPage.module.css";
+import styles from "../styles/Note.module.css";
 
 interface NotesPageProps {
   loggedInUser: User | null;

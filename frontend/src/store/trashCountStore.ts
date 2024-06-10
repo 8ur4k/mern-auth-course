@@ -2,7 +2,7 @@ import { create } from "zustand";
 import * as NotesApi from "../network/notes_api";
 
 async function fetchTrashCount() {
-  return (await NotesApi.fetcDeletedNotes()).length;
+  return (await NotesApi.fetchTrashedNotes()).length;
 }
 
 interface TrashCountState {

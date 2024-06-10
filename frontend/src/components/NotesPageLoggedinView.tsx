@@ -3,7 +3,7 @@ import { Button, Col, Row, Spinner } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa";
 import { Note as NoteModel } from "../models/note";
 import * as NotesApi from "../network/notes_api";
-import styles from "../styles/NotesPage.module.css";
+import styles from "../styles/Note.module.css";
 import stylesUtils from "../styles/utils.module.css";
 import AddEditNoteDialog from "./AddEditNoteDialog";
 import Note from "./Note";
@@ -53,7 +53,6 @@ const NotesPageLoggedinView = () => {
         <Col key={note._id}>
           <Note
             note={note}
-            className={styles.note}
             onNoteClicked={setNoteToEdit}
             onTrashNoteClicked={trashNote}
           />

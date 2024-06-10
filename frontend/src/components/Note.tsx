@@ -2,7 +2,6 @@ import styles from "../styles/Note.module.css";
 import stylesUtils from "../styles/utils.module.css";
 import { Card } from "react-bootstrap";
 import { Note as NoteModel } from "../models/note";
-import { create } from "domain";
 import { formatDate } from "../utils/formatDate";
 import { MdDelete } from "react-icons/md";
 
@@ -10,15 +9,9 @@ interface NoteProps {
   note: NoteModel;
   onNoteClicked: (note: NoteModel) => void;
   onTrashNoteClicked: (note: NoteModel) => void;
-  className?: string;
 }
 
-const Note = ({
-  note,
-  onNoteClicked,
-  onTrashNoteClicked,
-  className,
-}: NoteProps) => {
+const Note = ({ note, onNoteClicked, onTrashNoteClicked }: NoteProps) => {
   const { title, text, createdAt, updatedAt } = note;
 
   let createdUpdatedText: string;
@@ -30,7 +23,7 @@ const Note = ({
 
   return (
     <Card
-      className={`${styles.noteCard} ${className}`}
+      className={`${styles.noteCard} ${styles.note}`}
       onClick={() => onNoteClicked(note)}
     >
       <Card.Body className={styles.cardBody}>
