@@ -34,7 +34,7 @@ const TrashPageLoggedinView = () => {
     loadNotes();
   }, []);
 
-  async function permaDeleteNote() {
+  async function deleteNote() {
     if (!noteToTrash) return;
     try {
       setDeletedNotes(
@@ -43,7 +43,7 @@ const TrashPageLoggedinView = () => {
         )
       );
       decrement();
-      await NotesApi.permaDeleteNote(noteToTrash._id);
+      await NotesApi.deleteNote(noteToTrash._id);
     } catch (error) {
       console.error(error);
       alert(error);
@@ -107,7 +107,7 @@ const TrashPageLoggedinView = () => {
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={permaDeleteNote}>
+          <Button variant="danger" onClick={deleteNote}>
             Delete
           </Button>
         </Modal.Footer>

@@ -26,6 +26,6 @@ export const RestoreDeletedNoteSchema = z.object({
   noteId: z.string(),
 });
 
-export const PermaDeleteNoteSchema = z.object({
+export const DeleteNoteSchema = z.object({
   noteId: z.string(),
 });

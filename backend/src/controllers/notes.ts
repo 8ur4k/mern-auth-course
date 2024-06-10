@@ -213,8 +213,8 @@ export const restoreDeletedNote: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const permaDeleteNote: RequestHandler = async (req, res, next) => {
-  const { data, error } = schemas.PermaDeleteNoteSchema.safeParse(req.params);
+export const deleteNote: RequestHandler = async (req, res, next) => {
+  const { data, error } = schemas.DeleteNoteSchema.safeParse(req.params);
   const authenticatedUserId = req.session.userId;
 
   if (error) {
