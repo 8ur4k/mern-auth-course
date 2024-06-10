@@ -36,11 +36,11 @@ const NotesPageLoggedinView = () => {
     loadNotes();
   }, []);
 
-  async function deleteNote(note: NoteModel) {
+  async function trashNote(note: NoteModel) {
     try {
       setNotes(notes.filter((existingNote) => existingNote._id !== note._id));
       increment();
-      await NotesApi.deleteNote(note._id);
+      await NotesApi.trashNote(note._id);
     } catch (error) {
       console.error(error);
       alert(error);
@@ -55,7 +55,7 @@ const NotesPageLoggedinView = () => {
             note={note}
             className={styles.note}
             onNoteClicked={setNoteToEdit}
-            onDeleteNoteClicked={deleteNote}
+            onTrashNoteClicked={trashNote}
           />
         </Col>
       ))}

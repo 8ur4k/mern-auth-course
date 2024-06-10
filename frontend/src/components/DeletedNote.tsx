@@ -27,14 +27,14 @@ function formatExpiresIn(deletedAt: string): string {
 
 interface DeletedNoteProps {
   note: DeletedNoteModel;
-  onDeleteNoteClicked: (note: DeletedNoteModel) => void;
+  onTrashNoteClicked: (note: DeletedNoteModel) => void;
   onRestoreNoteClicked: (note: DeletedNoteModel) => void;
   className?: string;
 }
 
 const DeletedNote = ({
   note,
-  onDeleteNoteClicked,
+  onTrashNoteClicked,
   onRestoreNoteClicked,
   className,
 }: DeletedNoteProps) => {
@@ -56,7 +56,7 @@ const DeletedNote = ({
             />
             <MdDelete
               onClick={(e) => {
-                onDeleteNoteClicked(note);
+                onTrashNoteClicked(note);
                 e.stopPropagation();
               }}
             />

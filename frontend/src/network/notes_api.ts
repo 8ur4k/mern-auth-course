@@ -45,8 +45,8 @@ export async function updateNote(
   return response.json();
 }
 
-export async function deleteNote(noteId: string) {
-  await fetchData("/api/notes/" + noteId, { method: "DELETE" });
+export async function trashNote(noteId: string) {
+  await fetchData(`/api/notes/${noteId}/trash`, { method: "POST" });
 }
 
 export async function fetcDeletedNotes(): Promise<DeletedNote[]> {
