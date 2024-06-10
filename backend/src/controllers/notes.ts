@@ -124,8 +124,8 @@ export const updateNote: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const deleteNote: RequestHandler = async (req, res, next) => {
-  const { data, error } = schemas.DeleteNoteParamsSchema.safeParse(req.params);
+export const trashNote: RequestHandler = async (req, res, next) => {
+  const { data, error } = schemas.TrashNoteParamsSchema.safeParse(req.params);
   const authenticatedUserId = req.session.userId;
 
   if (error) {

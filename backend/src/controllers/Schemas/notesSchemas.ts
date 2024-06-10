@@ -18,7 +18,7 @@ export const UpdateNoteParamsSchema = z.object({
   noteId: z.string(),
 });
 
-export const DeleteNoteParamsSchema = z.object({
+export const TrashNoteParamsSchema = z.object({
   noteId: z.string(),
 });
 
