@@ -79,7 +79,6 @@ const TrashPageLoggedinView = () => {
         <Col key={note._id}>
           <DeletedNote
             note={note}
-            className={styles.note}
             onDeleteNoteClicked={handleDeleteClick}
             onRestoreNoteClicked={restoreNote}
           />

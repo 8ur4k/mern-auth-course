@@ -29,21 +29,19 @@ interface DeletedNoteProps {
   note: DeletedNoteModel;
   onDeleteNoteClicked: (note: DeletedNoteModel) => void;
   onRestoreNoteClicked: (note: DeletedNoteModel) => void;
-  className?: string;
 }
 
 const DeletedNote = ({
   note,
   onDeleteNoteClicked,
   onRestoreNoteClicked,
-  className,
 }: DeletedNoteProps) => {
   const { title, text, deletedAt } = note;
 
   const ExpiresIn = "Expires in: " + formatExpiresIn(deletedAt);
 
   return (
-    <Card className={`${styles.noteCard} ${className}`}>
+    <Card className={`${styles.noteCard} ${styles.note}`}>
       <Card.Body className={styles.cardBody}>
         <Card.Title className={stylesUtils.flexCenter}>
           {title}
