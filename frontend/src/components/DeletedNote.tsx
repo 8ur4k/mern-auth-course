@@ -38,7 +38,7 @@ const DeletedNote = ({
 }: DeletedNoteProps) => {
   const { title, text, deletedAt } = note;
 
-  const ExpiresIn = "Expires in: " + formatExpiresIn(deletedAt);
+  const expiresIn = "Expires in: " + formatExpiresIn(deletedAt);
 
   return (
     <Card className={`${styles.noteCard} ${styles.note}`}>
@@ -62,7 +62,7 @@ const DeletedNote = ({
         </Card.Title>
         <Card.Text className={styles.cardText}>{text}</Card.Text>
       </Card.Body>
-      <Card.Footer className="text-muted">{ExpiresIn}</Card.Footer>
+      <Card.Footer className="text-muted">{expiresIn}</Card.Footer>
     </Card>
   );
 };
