@@ -27,15 +27,11 @@ function formatExpiresIn(trashedAt: string): string {
 
 interface TrashedNoteProps {
   note: TrashedNoteModel;
-  onDeleteNoteClicked: (note: TrashedNoteModel) => void;
-  onRestoreNoteClicked: (note: TrashedNoteModel) => void;
+  onDelete: (note: TrashedNoteModel) => void;
+  onRestore: (note: TrashedNoteModel) => void;
 }
 
-const TrashedNote = ({
-  note,
-  onDeleteNoteClicked,
-  onRestoreNoteClicked,
-}: TrashedNoteProps) => {
+const TrashedNote = ({ note, onDelete, onRestore }: TrashedNoteProps) => {
   const { title, text, trashedAt } = note;
 
   const expiresIn = "Expires in: " + formatExpiresIn(trashedAt);
@@ -48,13 +44,13 @@ const TrashedNote = ({
           <div className="text muted ms-auto">
             <MdOutlineSettingsBackupRestore
               onClick={(e) => {
-                onRestoreNoteClicked(note);
+                onRestore(note);
                 e.stopPropagation();
               }}
             />
             <MdDelete
               onClick={(e) => {
-                onDeleteNoteClicked(note);
+                onDelete(note);
                 e.stopPropagation();
               }}
             />

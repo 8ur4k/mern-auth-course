@@ -51,11 +51,7 @@ const NotesPageLoggedinView = () => {
     <Row xs={1} md={2} xl={3} className={`g-4 ${styles.notesGrid}`}>
       {notes.map((note) => (
         <Col key={note._id}>
-          <Note
-            note={note}
-            onNoteClicked={setNoteToEdit}
-            onTrashNoteClicked={trashNote}
-          />
+          <Note note={note} onNoteClicked={setNoteToEdit} onTrash={trashNote} />
         </Col>
       ))}
     </Row>
