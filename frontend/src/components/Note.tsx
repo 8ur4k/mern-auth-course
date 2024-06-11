@@ -2,23 +2,16 @@ import styles from "../styles/Note.module.css";
 import stylesUtils from "../styles/utils.module.css";
 import { Card } from "react-bootstrap";
 import { Note as NoteModel } from "../models/note";
-import { create } from "domain";
 import { formatDate } from "../utils/formatDate";
 import { MdDelete } from "react-icons/md";
 
 interface NoteProps {
   note: NoteModel;
   onNoteClicked: (note: NoteModel) => void;
-  onDeleteNoteClicked: (note: NoteModel) => void;
-  className?: string;
+  onTrash: (note: NoteModel) => void;
 }
 
-const Note = ({
-  note,
-  onNoteClicked,
-  onDeleteNoteClicked,
-  className,
-}: NoteProps) => {
+const Note = ({ note, onNoteClicked, onTrash }: NoteProps) => {
   const { title, text, createdAt, updatedAt } = note;
 
   let createdUpdatedText: string;
@@ -30,7 +23,7 @@ const Note = ({
 
   return (
     <Card
-      className={`${styles.noteCard} ${className}`}
+      className={`${styles.noteCard} ${styles.note}`}
       onClick={() => onNoteClicked(note)}
     >
       <Card.Body className={styles.cardBody}>
@@ -39,7 +32,7 @@ const Note = ({
           <MdDelete
             className="text muted ms-auto"
             onClick={(e) => {
-              onDeleteNoteClicked(note);
+              onTrash(note);
               e.stopPropagation();
             }}
           />

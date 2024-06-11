@@ -5,9 +5,12 @@ const noteSchema = new Schema(
     userId: { type: Schema.Types.ObjectId, required: true },
     title: { type: String, required: true },
     text: { type: String },
+    trashedAt: { type: Date, default: undefined },
   },
   { timestamps: true }
 );
+
+noteSchema.index({ trashedAt: 1 }, { expireAfterSeconds: 86400 });
 
 type Note = InferSchemaType<typeof noteSchema>;
 

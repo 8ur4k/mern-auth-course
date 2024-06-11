@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 interface NavBarProps {
   loggedInUser: User | null;
+  trashLength: Number;
   onSignUpClicked: () => void;
   onLoginClicked: () => void;
   onlogoutSuccessful: () => void;
@@ -13,6 +14,7 @@ interface NavBarProps {
 
 const NavBar = ({
   loggedInUser,
+  trashLength,
   onSignUpClicked,
   onLoginClicked,
   onlogoutSuccessful,
@@ -28,6 +30,9 @@ const NavBar = ({
           <Nav>
             <Nav.Link as={Link} to="/privacy">
               Privacy
+            </Nav.Link>
+            <Nav.Link as={Link} to="/trash">
+              {`Trash(${trashLength})`}
             </Nav.Link>
           </Nav>
           <Nav className="ms-auto">

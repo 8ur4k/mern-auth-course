@@ -1,9 +1,9 @@
 import { RequestHandler } from "express";
 import NoteModel from "../models/note";
 import createHttpError from "http-errors";
-import * as z from "zod";
 import mongoose from "mongoose";
 import { assertIsDefined } from "../util/assertIsDefined";
+import * as schemas from "./Schemas/notesSchemas";
 
 export const getNotes: RequestHandler = async (req, res, next) => {
   const authenticatedUserId = req.session.userId;
@@ -11,7 +11,10 @@ export const getNotes: RequestHandler = async (req, res, next) => {
   try {
     assertIsDefined(authenticatedUserId);
 
-    const notes = await NoteModel.find({ userId: authenticatedUserId }).exec();
+    const notes = await NoteModel.find({
+      userId: authenticatedUserId,
+      trashedAt: null,
+    }).exec();
     res.status(200).json(notes);
   } catch (error) {
     next(error);
@@ -19,8 +22,14 @@ export const getNotes: RequestHandler = async (req, res, next) => {
 };
 
 export const getNote: RequestHandler = async (req, res, next) => {
-  const noteId = req.params.noteId;
+  const { data, error } = schemas.GetNoteParamsSchema.safeParse(req.params);
   const authenticatedUserId = req.session.userId;
+
+  if (error) {
+    throw createHttpError(400, "Invalid parameters");
+  }
+
+  const { noteId } = data;
 
   try {
     assertIsDefined(authenticatedUserId);
@@ -45,14 +54,14 @@ export const getNote: RequestHandler = async (req, res, next) => {
   }
 };
 
-const CreateNoteBodySchema = z.object({ title: z.string(), text: z.string() });
-
 export const createNote: RequestHandler = async (req, res, next) => {
   const authenticatedUserId = req.session.userId;
-  const { data, error } = CreateNoteBodySchema.safeParse(req.body);
+  const { data, error } = schemas.CreateNoteBodySchema.safeParse(req.body);
+
   if (error) {
     throw createHttpError(400, "Invalid parameters");
   }
+
   const { title, text } = data;
 
   try {
@@ -73,23 +82,18 @@ export const createNote: RequestHandler = async (req, res, next) => {
   }
 };
 
-const UpdateNoteBodySchema = z.object({
-  title: z.string(),
-  text: z.string().optional(),
-});
-
-const UpdateNoteParamsSchema = z.object({
-  noteId: z.string(),
-});
-
 export const updateNote: RequestHandler = async (req, res, next) => {
-  const { noteId } = UpdateNoteParamsSchema.parse(req.params);
-  const { data, error } = UpdateNoteBodySchema.safeParse(req.body);
-  if (error) {
+  const { data: paramsData, error: paramsError } =
+    schemas.UpdateNoteParamsSchema.safeParse(req.params);
+  const { data: bodyData, error: bodyError } =
+    schemas.UpdateNoteBodySchema.safeParse(req.body);
+
+  if (bodyError || paramsError) {
     throw createHttpError(400, "Invalid parameters");
   }
-  const newTitle = data.title;
-  const newText = data.text;
+
+  const { noteId } = paramsData;
+  const { text: newText, title: newTitle } = bodyData;
   const authenticatedUserId = req.session.userId;
 
   try {
@@ -120,9 +124,102 @@ export const updateNote: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const deleteNote: RequestHandler = async (req, res, next) => {
-  const noteId = req.params.noteId;
+export const trashNote: RequestHandler = async (req, res, next) => {
+  const { data, error } = schemas.TrashNoteParamsSchema.safeParse(req.params);
   const authenticatedUserId = req.session.userId;
+
+  if (error) {
+    throw createHttpError(400, "Invalid parameters");
+  }
+
+  const { noteId } = data;
+
+  try {
+    assertIsDefined(authenticatedUserId);
+
+    if (!mongoose.isValidObjectId(noteId)) {
+      throw createHttpError(400, "Invalid note ID");
+    }
+    const note = await NoteModel.findById(noteId).exec();
+
+    if (!note) {
+      throw createHttpError(404, "Note not found");
+    }
+
+    if (!note.userId.equals(authenticatedUserId)) {
+      throw createHttpError(401, "You cannot access this note");
+    }
+
+    note.trashedAt = new Date();
+
+    await note.save();
+
+    res.sendStatus(204);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getTrashedNotes: RequestHandler = async (req, res, next) => {
+  const authenticatedUserId = req.session.userId;
+
+  try {
+    assertIsDefined(authenticatedUserId);
+
+    const notes = await NoteModel.find({
+      userId: authenticatedUserId,
+      trashedAt: { $ne: null },
+    }).exec();
+    res.status(200).json(notes);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const restoreNote: RequestHandler = async (req, res, next) => {
+  const { data, error } = schemas.RestoreNoteSchema.safeParse(req.params);
+  const authenticatedUserId = req.session.userId;
+
+  if (error) {
+    throw createHttpError(400, "Invalid parameters");
+  }
+
+  const { noteId } = data;
+
+  try {
+    assertIsDefined(authenticatedUserId);
+
+    if (!mongoose.isValidObjectId(noteId)) {
+      throw createHttpError(400, "Invalid note ID");
+    }
+
+    const note = await NoteModel.findById(noteId).exec();
+
+    if (!note) {
+      throw createHttpError(404, "Note not found");
+    }
+
+    if (!note.userId.equals(authenticatedUserId)) {
+      throw createHttpError(401, "You cannot access this note");
+    }
+
+    await NoteModel.findByIdAndUpdate(noteId, { $unset: { trashedAt: 1 } });
+
+    res.status(200).json(note);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteNote: RequestHandler = async (req, res, next) => {
+  const { data, error } = schemas.DeleteNoteSchema.safeParse(req.params);
+  const authenticatedUserId = req.session.userId;
+
+  if (error) {
+    throw createHttpError(400, "Invalid parameters");
+  }
+
+  const { noteId } = data;
 
   try {
     assertIsDefined(authenticatedUserId);
@@ -142,7 +239,7 @@ export const deleteNote: RequestHandler = async (req, res, next) => {
 
     await note.remove();
 
-    res.sendStatus(204);
+    res.sendStatus(200);
   } catch (error) {
     next(error);
   }

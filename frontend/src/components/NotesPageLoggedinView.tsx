@@ -3,18 +3,20 @@ import { Button, Col, Row, Spinner } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa";
 import { Note as NoteModel } from "../models/note";
 import * as NotesApi from "../network/notes_api";
-import styles from "../styles/NotesPage.module.css";
+import styles from "../styles/Note.module.css";
 import stylesUtils from "../styles/utils.module.css";
 import AddEditNoteDialog from "./AddEditNoteDialog";
 import Note from "./Note";
+import useTrashCountStore from "../store/trashCountStore";
 
 const NotesPageLoggedinView = () => {
   const [notes, setNotes] = useState<NoteModel[]>([]);
   const [notesLoading, setNotesLoading] = useState(true);
   const [showNotesLoadingError, setShowNotesLoadingError] = useState(false);
-
   const [showAddEditNoteDialog, setShowAddEditNoteDialog] = useState(false);
   const [noteToEdit, setNoteToEdit] = useState<NoteModel | null>(null);
+
+  const { increment } = useTrashCountStore();
 
   useEffect(() => {
     async function loadNotes() {
@@ -34,10 +36,11 @@ const NotesPageLoggedinView = () => {
     loadNotes();
   }, []);
 
-  async function deleteNote(note: NoteModel) {
+  async function trashNote(note: NoteModel) {
     try {
-      await NotesApi.deleteNote(note._id);
       setNotes(notes.filter((existingNote) => existingNote._id !== note._id));
+      increment();
+      await NotesApi.trashNote(note._id);
     } catch (error) {
       console.error(error);
       alert(error);
@@ -48,12 +51,7 @@ const NotesPageLoggedinView = () => {
     <Row xs={1} md={2} xl={3} className={`g-4 ${styles.notesGrid}`}>
       {notes.map((note) => (
         <Col key={note._id}>
-          <Note
-            note={note}
-            className={styles.note}
-            onNoteClicked={setNoteToEdit}
-            onDeleteNoteClicked={deleteNote}
-          />
+          <Note note={note} onNoteClicked={setNoteToEdit} onTrash={trashNote} />
         </Col>
       ))}
     </Row>

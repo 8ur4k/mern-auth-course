@@ -4,20 +4,22 @@ import LoginModal from "./components/LoginModal";
 import SignUpModal from "./components/SignUpModal";
 import { User } from "./models/user";
 import * as UserApi from "./network/users_api";
-import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import NotesPage from "./pages/NotesPage";
+import TrashPage from "./pages/TrashPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import ProfilePage from "./pages/ProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import styles from "./styles/App.module.css";
+import useTrashCountStore from "./store/trashCountStore";
 
 function App() {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
-  console.log("a");
+  const trashLength = useTrashCountStore((state) => state.count);
 
   useEffect(() => {
     async function fetchLoggedInUser() {
@@ -36,6 +38,7 @@ function App() {
       <div>
         <NavBar
           loggedInUser={loggedInUser}
+          trashLength={trashLength}
           onLoginClicked={() => setShowLoginModal(true)}
           onSignUpClicked={() => setShowSignUpModal(true)}
           onlogoutSuccessful={() => setLoggedInUser(null)}
@@ -45,6 +48,10 @@ function App() {
             <Route
               path="/"
               element={<NotesPage loggedInUser={loggedInUser} />}
+            />
+            <Route
+              path="/trash"
+              element={<TrashPage loggedInUser={loggedInUser} />}
             />
             <Route path="/users/:username" element={<ProfilePage />} />
             <Route path="/privacy" element={<PrivacyPage />} />

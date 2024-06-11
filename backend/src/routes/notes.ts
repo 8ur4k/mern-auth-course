@@ -5,12 +5,18 @@ const router = express.Router();
 
 router.get("/", NotesController.getNotes);
 
+router.get("/trash", NotesController.getTrashedNotes);
+
+router.post("/trash/restore/:noteId", NotesController.restoreNote);
+
+router.delete("/trash/:noteId", NotesController.deleteNote);
+
 router.get("/:noteId", NotesController.getNote);
 
 router.post("/", NotesController.createNote);
 
 router.patch("/:noteId", NotesController.updateNote);
 
-router.delete("/:noteId", NotesController.deleteNote);
+router.post("/:noteId/trash", NotesController.trashNote);
 
 export default router;
